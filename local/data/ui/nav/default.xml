@@ -1,0 +1,61 @@
+<nav search_view="search">
+  <view name="search" default='true' />
+  <collection label="*NIX">
+    <view name="nix_redhatcentos_versions" />
+    <view name="nix_hardware" />
+    <view name="nix_packages" />
+    <collection label="CPU">
+      <view name="nix_cpu_by_host" />
+      <view name="nix_cpu_by_process" />
+      <view name="nix_cpu_by_state" />
+      <view name="nix_cpu_by_user" />
+      <view name="nix_cpu_overview" />
+    </collection>
+    <collection label="Memory">
+      <view name="nix_memory_by_host" />
+      <view name="nix_memory_by_process" />
+      <view name="nix_memory_overview" />
+      <view name="nix_memory_usage_by_user" />
+    </collection>
+
+    <collection label="Disk">
+      <view name="nix_files_opened_by_command" />
+      <view name="nix_files_opened_by_user" />
+      <view name="nix_files_owned_by_type" />
+      <view name="nix_disk_io_rates" />
+      <view name="nix_diskspace_used_by_host" />
+    </collection>
+    
+    <collection label="Network">
+      <view name="nix_bandwidth" />
+      <view name="nix_connection_details" />
+      <view name="nix_interface_throughput" />
+      <view name="nix_rare_network_connections" />
+    </collection>
+    
+    <collection label="Configs">
+      <view name="nix_config_file_analytics" />
+      <view name="nix_config_file_diff" />
+      <view name="nix_config_file_viewer" />
+    </collection>
+    
+    <collection label="User">
+      <view name="nix_failed_attempts_at_su" />
+      <view name="nix_failed_logon" />
+      <view name="nix_user_management" />
+      <view name="nix_successful_user_logins" />
+      <view name="nix_usersWithLoginPrivs" />
+    </collection>
+    
+    <collection label="System">
+      <view name="nix_cron" />
+      <view name="nix_service" />
+    </collection>
+    
+  </collection>
+  <view name="analysis_workspace" />  
+  <view name="datasets" />
+  <view name="reports" />
+  <view name="alerts" />
+  <view name="dashboards" />
+</nav>

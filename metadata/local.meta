@@ -1,0 +1,173 @@
+[app/ui]
+version = 7.3.1
+modtime = 1567633233.704451000
+
+[app/launcher]
+version = 7.3.1
+modtime = 1567633233.706747000
+
+[nav/default]
+version = 7.3.1
+modtime = 1567641152.861676000
+
+[views/nix_redhatcentos_versions]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1567633945.876460000
+
+[views/nix_hardware]
+owner = admin
+version = 7.3.1
+modtime = 1567634789.205295000
+
+[views/nix_packages]
+owner = admin
+version = 7.3.1
+modtime = 1567635533.650561000
+
+[views/nix_cpu_by_host]
+owner = admin
+version = 7.3.1
+modtime = 1567636051.584725000
+
+[views/nix_cpu_by_process]
+owner = admin
+version = 7.3.1
+modtime = 1567636393.898044000
+
+[views/nix_cpu_by_state]
+owner = admin
+version = 7.3.1
+modtime = 1567636630.812835000
+
+[views/nix_cpu_by_user]
+owner = admin
+version = 7.3.1
+modtime = 1567636746.689217000
+
+[views/nix_cpu_overview]
+owner = admin
+version = 7.3.1
+modtime = 1567637025.051396000
+
+[views/nix_memory_by_host]
+owner = admin
+version = 7.3.1
+modtime = 1567637562.546378000
+
+[views/nix_memory_by_process]
+owner = admin
+version = 7.3.1
+modtime = 1567637689.608025000
+
+[views/nix_memory_overview]
+owner = admin
+version = 7.3.1
+modtime = 1567637797.338170000
+
+[views/nix_memory_usage_by_user]
+owner = admin
+version = 7.3.1
+modtime = 1567637964.201164000
+
+[views/nix_files_opened_by_command]
+owner = admin
+version = 7.3.1
+modtime = 1567638124.239013000
+
+[views/nix_files_opened_by_user]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1567638523.485498000
+
+[views/nix_files_owned_by_type]
+owner = admin
+version = 7.3.1
+modtime = 1567638359.384303000
+
+[views/nix_disk_io_rates]
+owner = admin
+version = 7.3.1
+modtime = 1567638626.790949000
+
+[views/nix_diskspace_used_by_host]
+owner = admin
+version = 7.3.1
+modtime = 1567638751.016702000
+
+[views/nix_bandwidth]
+owner = admin
+version = 7.3.1
+modtime = 1567638854.099031000
+
+[views/nix_connection_details]
+owner = admin
+version = 7.3.1
+modtime = 1567639000.923117000
+
+[views/nix_interface_throughput]
+owner = admin
+version = 7.3.1
+modtime = 1567639119.356817000
+
+[views/nix_rare_network_connections]
+owner = admin
+version = 7.3.1
+modtime = 1567639227.532728000
+
+[views/nix_config_file_analytics]
+owner = admin
+version = 7.3.1
+modtime = 1567639359.935390000
+
+[views/nix_config_file_diff]
+owner = admin
+version = 7.3.1
+modtime = 1567639648.360554000
+
+[views/nix_config_file_viewer]
+owner = admin
+version = 7.3.1
+modtime = 1567639874.607716000
+
+[views/nix_cron]
+owner = admin
+version = 7.3.1
+modtime = 1567640029.232224000
+
+[views/nix_service]
+owner = admin
+version = 7.3.1
+modtime = 1567640136.552981000
+
+[views/nix_failed_logon]
+owner = admin
+version = 7.3.1
+modtime = 1567640815.824465000
+
+[views/nix_user_management]
+owner = admin
+version = 7.3.1
+modtime = 1567640903.707137000
+
+[views/nix_successful_user_logins]
+owner = admin
+version = 7.3.1
+modtime = 1567641026.536215000
+
+[views/nix_usersWithLoginPrivs]
+access = read : [ * ], write : [ admin_shdev ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1568238963.761001000
+
+[]
+access = read : [ * ], write : [ admin, admin_shdev ]
+export = system
+version = 7.3.1
+modtime = 1568240126.525077000

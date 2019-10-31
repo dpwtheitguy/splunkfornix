@@ -1,0 +1,51 @@
+<form>
+  <label>Memory by Host</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-4h@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Percent Memory Used by Host.</title>
+        <search>
+          <query>sourcetype=vmstat host=$host$ | multikv fields memFreePct, memUsedPct, swapUsedPct | timechart median(memFreePct) as Percent_Mem_Free, median(memUsedPct) as Percent_Mem_Used, median(swapUsedPct) as Percent_Swap</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <table>
+        <title>Resident Memory by Process</title>
+        <search>
+          <query>sourcetype=hardware host=$host$ | dedup host | fields + RealMemoryMB, SwapMemoryMB, host | chart max(RealMemoryMB) as Real_Memory_MB, max(SwapMemoryMB) as Swap_Memory_MB by host</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,59 @@
+<form class="formsearch">
+  <label>CPU by Process</label>
+  <fieldset>
+    <input type="dropdown" token="host" searchWhenChanged="true">
+      <label>Host:</label>
+      <default>localhost</default>
+      <populatingSearch fieldForValue="host" fieldForLabel="host">| metadata type=hosts index=os<query>| inputlookup  indexoshosts.csv
+| sort host</query>
+      </populatingSearch>
+      <choice value="*">all (slow)</choice>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+    </input>
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>CPU by Process</h1>
+        </center>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Avg CPU by Process</title>
+        <search>
+          <query>sourcetype="ps" host=$host$
+| multikv fields pctCPU, COMMAND 
+| timechart avg(pctCPU) by COMMAND</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <table>
+        <title>Top CPU Using Processes</title>
+        <search>
+          <query>sourcetype=top host=$host$ | multikv fields pctCPU COMMAND | stats max(pctCPU) by host, COMMAND, _time | sort -max(pctCPU)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>

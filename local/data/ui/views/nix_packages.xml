@@ -1,0 +1,74 @@
+<form>
+  <label>Packages</label>
+  <description>sourcetype=packages</description>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>index=configs | dedup host | table host | sort host</query>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Packages Installed</title>
+      <single>
+        <search>
+          <query>index=os sourcetype="package" host=$host$ 
+| dedup host NAME 
+| stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Package List</title>
+      <table>
+        <search>
+          <query>index=os sourcetype="package" host=$host$ | dedup host NAME | table host, NAME, GROUP, ARCH</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Multple Version of the Same Package</title>
+      <table>
+        <search>
+          <query>index=os sourcetype=package host=* NAME=* 
+| eval package=NAME+ "_" + VERSION +"_"+RELEASE
+| dedup package 
+| stats list(host) as hosts count by NAME
+| where count &gt; 1
+| sort - count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

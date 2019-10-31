@@ -1,0 +1,38 @@
+<form>
+  <label>Bandwidth</label>
+  <description>sourcetype=bandwidth</description>
+  <fieldset submitButton="false">
+    <input type="text" token="field1">
+      <label>Host</label>
+      <default>*</default>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>bandwidth</title>
+      <table>
+        <search>
+          <query>sourcetype=bandwidth host=$field1$ | dedup host | table host, bytes, bytes_in, bytes_out</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

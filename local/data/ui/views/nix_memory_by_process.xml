@@ -1,0 +1,54 @@
+<form>
+  <label>Memory by Process</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Memory Usage by Process</title>
+        <search>
+          <query>sourcetype=ps host=$host$| multikv fields RSZ_KB, COMMAND | timechart eval(median(RSZ_KB)/1024) as ResidentMB by COMMAND</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Top Memory Using Processes</title>
+        <search>
+          <query>sourcetype=ps host=$host$| multikv fields RSZ_KB, VSZ_KB, pctMEM, COMMAND | eval RSZ_MB=RSZ_KB/1024 | eval VSZ_MB=VSZ_KB/1024 | stats max(RSZ_MB) as Resident_MB, max(VSZ_MB) as Virtual_MB, max(pctMEM) as Percent_Memory by host, COMMAND, _time | dedup COMMAND | sort -Resident_MB</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,91 @@
+<form>
+  <label>Config File Diff</label>
+  <description>To request a config file to be auditing and monitored by Splunk please open a SPLUNK ticket with component Data Onboarding and Curation. If there are no changes in the config_file source results will be "Search did not find any results"</description>
+  <fieldset submitButton="false"></fieldset>
+  <row>
+    <panel>
+      <title>File Diff</title>
+      <input type="dropdown" token="field2">
+        <label>source</label>
+        <fieldForLabel>source</fieldForLabel>
+        <fieldForValue>source</fieldForValue>
+        <search>
+          <query>| metadata type=sources index=configs | table source | sort source</query>
+          <earliest>-30d@d</earliest>
+          <latest>now</latest>
+        </search>
+      </input>
+      <input type="dropdown" token="field3">
+        <label>host</label>
+        <fieldForLabel>host</fieldForLabel>
+        <fieldForValue>host</fieldForValue>
+        <search>
+          <query>| metadata type=hosts index=configs</query>
+          <earliest>-90d@d</earliest>
+          <latest>now</latest>
+        </search>
+        <choice value="*">*</choice>
+      </input>
+      <input type="time" token="field5">
+        <label></label>
+        <default>
+          <earliest>-30d@d</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
+      <event>
+        <search>
+          <query>(index=configs OR index=os) host=$field3$ source=$field2$ sourcetype="config_file"  | diff pos1=1 pos2=2</query>
+          <earliest>$field5.earliest$</earliest>
+          <latest>$field5.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="list.drilldown">none</option>
+        <option name="list.wrap">1</option>
+        <option name="maxLines">5</option>
+        <option name="raw.drilldown">full</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">0</option>
+        <option name="table.drilldown">all</option>
+        <option name="table.sortDirection">asc</option>
+        <option name="table.wrap">1</option>
+        <option name="type">list</option>
+      </event>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top Hosts Changing</title>
+      <table>
+        <search>
+          <query>(index=configs OR index=os) sourcetype=config_file | top host</query>
+          <earliest>$field5.earliest$</earliest>
+          <latest>$field5.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Rare Changes</title>
+        <search>
+          <query>(index=configs OR index=os) sourcetype=config_file | rare host</query>
+          <earliest>$field5.earliest$</earliest>
+          <latest>$field5.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>

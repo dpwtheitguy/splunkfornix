@@ -1,0 +1,59 @@
+<form>
+  <label>Diskspace Used By Host</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Disk Used by Host and Volume</title>
+        <search>
+          <query>sourcetype="df" host=$host$ | multikv fields FileSystem, UsePct | strcat host '@' Filesystem Host_FileSystem | timechart avg(UsePct) by Host_FileSystem useother=f | rename avg(UsePct) as %Used</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">collapsed</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <event>
+        <title>Latest Disk Used by Host</title>
+        <search>
+          <query>sourcetype="df" host=$host$ | multikv fields FileSystem, UsePct | strcat host '@' Filesystem Host_FileSystem | timechart avg(UsePct) by Host_FileSystem | rename avg(UsePct) as %Used</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+        </search>
+        <option name="list.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </event>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,28 @@
+<dashboard>
+  <label>CentOS/Redhat Versions</label>
+  <description>/etc/redhat-release . Outdated instances of CentOS detection</description>
+  <row>
+    <panel>
+      <title>Enterprise OS Versions Discovered</title>
+      <table>
+        <search>
+          <query>index=os OR index=configs source="/etc/redhat-release"
+| dedup host
+| stats count by _raw
+| sort - count</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

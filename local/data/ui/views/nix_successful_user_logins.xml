@@ -1,0 +1,54 @@
+<form>
+  <label>Successful User Logins</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <title>Users with Login Privs</title>
+        <search>
+          <query>host=$host$ sourcetype=usersWithLoginPrivs host=$host$ | dedup host 
+| table HOME_DIR USERNAME USER_INFO _time host</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>User Sessions</title>
+        <search>
+          <query>sourcetype="who" host=$host$ | multikv fields USERNAME, LINE, TIME | dedup USERNAME, LINE, TIME sortby +_time | sort -_time | table USERNAME, LINE, TIME, _time</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,36 @@
+<form>
+  <label>Service</label>
+  <fieldset submitButton="false">
+    <input type="text" token="field1">
+      <label>Host</label>
+      <default>*mgt*</default>
+    </input>
+    <input type="text" token="field2">
+      <label>app</label>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>sourcetype="Unix:Service" app host=$field1$ app=$field2$
+| eval hostservice=host+app
+| dedup hostservice 
+| table host, app, runlevel0, runlevel1, runlevel2, runlevel3, runlevel4, runlevel5, runlevel6</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

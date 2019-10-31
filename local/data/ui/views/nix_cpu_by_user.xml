@@ -1,0 +1,59 @@
+<form class="formsearch">
+  <label>CPU by User</label>
+  <description>sourcetype="ps"</description>
+  <fieldset>
+    <input type="dropdown" token="host" searchWhenChanged="true">
+      <label>Host:</label>
+      <populatingSearch fieldForValue="host" fieldForLabel="host">| metadata type=hosts index=os<query>| inputlookup  indexoshosts.csv
+| sort host</query>
+      </populatingSearch>
+      <choice value="*">all</choice>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+    </input>
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>CPU by User</h1>
+        </center>
+        <p/>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>CPU by User</title>
+        <search>
+          <query>sourcetype="ps" host=$host$| multikv fields pctCPU, COMMAND, USER | timechart avg(pctCPU) by USER</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Top CPU Using Users</title>
+        <search>
+          <query>sourcetype=top host=$host$ | multikv fields pctCPU COMMANDi, USER | stats sum(pctCPU) as Total_CPU_Time by USER, | sort -Total_CPU_Time</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>

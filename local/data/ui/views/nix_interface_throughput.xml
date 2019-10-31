@@ -1,0 +1,60 @@
+<form>
+  <label>Interface Throughput</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Interface Throughput</title>
+        <search>
+          <query>sourcetype="interfaces" host=$host$ | multikv fields name, inetAddr, RXbytes, TXbytes | streamstats current=f last(TXbytes) as lastTX, last(RXbytes) as lastRX by Name | eval time=_time | strcat Name "-" inetAddr "@" host Interface_Host | eval RX_Thruput = lastRX-RXbytes | eval TX_Thruput = lastTX-TXbytes | timechart eval(sum(TX_Thruput)/dc(time)) by Interface_Host</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Top Interfaces</title>
+        <search>
+          <query>sourcetype="interfaces" host=$host$ | multikv fields Name, inetAddr | strcat Name "-" inetAddr "@" host Interface_Host | top Interface_Host limit=20</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>

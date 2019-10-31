@@ -1,0 +1,69 @@
+<form>
+  <label>Connection Details</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Open Ports</title>
+        <search>
+          <query>sourcetype=openPorts host=$host$ | HEAD LIMIT=1 | MULTIKV FIELDS Proto, Port | EVAL PortOverProto = case(Port == "8089", "Splunk Management Port", Port == "8000", "Splunk HTTP Port", Port == "21", "ftp", Port == "22", "ssh", Port == "23", "telnet", Port == "25", "smtp", Port == "69", "tftp", Port == "79", "finger", Port == "80", "http", Port == "88", "kerberos", Port == "143", "imap", Port == "161", "snmp", Port == "162", "snmptrap", Port == "179", "bgp", Port == "1521", "SQL*Net", 1==1, Port." / ".Proto) | CHART count BY PortOverProto | SORT count DESC | RENAME count AS "# of Connections Accepted"</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Socket State</title>
+        <search>
+          <query>sourcetype=netstat host=$host$ | MULTIKV FIELDS State | SEARCH NOT (State="&lt;n/a&gt;") | TIMECHART count BY State</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Addresses</title>
+        <search>
+          <query>sourcetype=netstat host=$host$ | HEAD LIMIT=1 | MULTIKV FIELDS ForeignAddress | REX FIELD=ForeignAddress "(?&lt;hostOnly&gt;^.*)[:\.].+$" | FIELDS + hostOnly | WHERE hostOnly != "*" | RENAME hostOnly AS Address | CHART sparkline count BY Address | SORT count DESC | RENAME count AS "# of Connections to This Address"</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,62 @@
+<form class="formsearch">
+  <label>CPU by State</label>
+  <description>sourcetype=cpu</description>
+  <fieldset>
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">all</choice>
+    </input>
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <center>
+          <h1>CPU by State</h1>
+        </center>
+        <p/>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Timeline CPU by State</title>
+        <search>
+          <query>sourcetype="cpu" host=$host$ | multikv fields, pctUser, pctNice, pctSystem, pctIowait, pctIdle | timechart avg(pctUser), avg(pctNice), avg(pctSystem), avg(pctIowait), avg(pctIdle)</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Avg CPU by State</title>
+        <search>
+          <query>sourcetype=cpu host=$host$ | multikv fields pctUser, pctSystem, pctIdle | stats avg(pctUser), avg(pctSystem), avg(pctIdle) by host</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked100</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>

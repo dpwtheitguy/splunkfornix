@@ -1,0 +1,54 @@
+<form>
+  <label>Memory Usage by User</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="host">
+      <label>Host:</label>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| metadata type=hosts index=os</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="field2">
+      <label></label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <chart>
+        <title>Avg Mem by User</title>
+        <search>
+          <query>source=ps host=$host$ | multikv fields RSZ_KB, USER | eval RSZ_MB=RSZ_KB/1024 | eval time=_time | timechart eval(sum(RSZ_MB)/dc(time)) as Avg_Mem_Usage by USER useother=F limit=10</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Top Mem Using Users</title>
+        <search>
+          <query>source=ps host=$host$ | multikv fields RSZ_KB, USER, COMMAND | eval RSZ_MB=RSZ_KB/1024 | stats max(RSZ_MB) by USER, COMMAND| sort -max(RSZ_MB)</query>
+          <earliest>$field2.earliest$</earliest>
+          <latest>$field2.latest$</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>
